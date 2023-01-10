@@ -1,0 +1,38 @@
+syntax = "proto3";
+option go_package = "github.com/ideaspaper/social-media-proto/user";
+package user;
+
+message UserReq {
+    string email = 1;
+    string password = 2;
+    string first_name = 3;
+    string last_name = 4;
+}
+
+message UserResp {
+    int64 id = 1;
+    string email = 2;
+    string first_name = 3;
+    string last_name = 4;
+    string created_at = 5;
+    string updated_at = 6;
+    optional string deleted_at = 7;
+}
+
+message Req {
+    string requestID = 1;
+    int64 userID = 2;
+    UserReq userReq = 3;
+}
+
+message Resp {
+    string message = 1;
+    UserResp userResp = 2;
+}
+
+service UserService {
+    rpc FindByID(Req) returns (Resp) {}
+    rpc Create(Req) returns (Resp) {}
+    rpc DeleteByID(Req) returns (Resp) {}
+    rpc DeletePermanentlyByID(Req) returns (Resp) {}
+}
