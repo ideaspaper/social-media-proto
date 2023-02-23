@@ -3,10 +3,11 @@ option go_package = "github.com/ideaspaper/social-media-proto/user";
 package user;
 
 message UserReq {
-    string email = 1;
-    string password = 2;
-    string first_name = 3;
-    string last_name = 4;
+    int64 id = 1;
+    string email = 2;
+    string password = 3;
+    string first_name = 4;
+    string last_name = 5;
 }
 
 message UserResp {
