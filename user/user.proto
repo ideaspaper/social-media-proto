@@ -32,7 +32,7 @@ message Resp {
 
 service UserService {
     rpc FindByID(Req) returns (Resp) {}
-    rpc FindUserByEmail(Req) returns (Resp) {}
+    rpc FindByEmail(Req) returns (Resp) {}
     rpc Create(Req) returns (Resp) {}
     rpc DeleteByID(Req) returns (Resp) {}
     rpc DeletePermanentlyByID(Req) returns (Resp) {}
