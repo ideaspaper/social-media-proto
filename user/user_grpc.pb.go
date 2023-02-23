@@ -27,7 +27,7 @@ type UserServiceClient interface {
 	DeleteByID(ctx context.Context, in *DeleteByIDReq, opts ...grpc.CallOption) (*DeleteByIDResp, error)
 	DeletePermanentlyByID(ctx context.Context, in *DeletePermanentlyByIDReq, opts ...grpc.CallOption) (*DeletePermanentlyByIDResp, error)
 	Login(ctx context.Context, in *LoginReq, opts ...grpc.CallOption) (*LoginResp, error)
-	Register(ctx context.Context, in *RegisterReq, opts ...grpc.CallOption) (*RegisterReq, error)
+	Register(ctx context.Context, in *RegisterReq, opts ...grpc.CallOption) (*RegisterResp, error)
 }
 
 type userServiceClient struct {
@@ -83,8 +83,8 @@ func (c *userServiceClient) Login(ctx context.Context, in *LoginReq, opts ...grp
 	return out, nil
 }
 
-func (c *userServiceClient) Register(ctx context.Context, in *RegisterReq, opts ...grpc.CallOption) (*RegisterReq, error) {
-	out := new(RegisterReq)
+func (c *userServiceClient) Register(ctx context.Context, in *RegisterReq, opts ...grpc.CallOption) (*RegisterResp, error) {
+	out := new(RegisterResp)
 	err := c.cc.Invoke(ctx, "/user.UserService/Register", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -101,7 +101,7 @@ type UserServiceServer interface {
 	DeleteByID(context.Context, *DeleteByIDReq) (*DeleteByIDResp, error)
 	DeletePermanentlyByID(context.Context, *DeletePermanentlyByIDReq) (*DeletePermanentlyByIDResp, error)
 	Login(context.Context, *LoginReq) (*LoginResp, error)
-	Register(context.Context, *RegisterReq) (*RegisterReq, error)
+	Register(context.Context, *RegisterReq) (*RegisterResp, error)
 	mustEmbedUnimplementedUserServiceServer()
 }
 
@@ -124,7 +124,7 @@ func (UnimplementedUserServiceServer) DeletePermanentlyByID(context.Context, *De
 func (UnimplementedUserServiceServer) Login(context.Context, *LoginReq) (*LoginResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Login not implemented")
 }
-func (UnimplementedUserServiceServer) Register(context.Context, *RegisterReq) (*RegisterReq, error) {
+func (UnimplementedUserServiceServer) Register(context.Context, *RegisterReq) (*RegisterResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Register not implemented")
 }
 func (UnimplementedUserServiceServer) mustEmbedUnimplementedUserServiceServer() {}
