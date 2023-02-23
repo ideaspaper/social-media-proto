@@ -76,5 +76,5 @@ service UserService {
     rpc DeleteByID(DeleteByIDReq) returns (DeleteByIDResp) {}
     rpc DeletePermanentlyByID(DeletePermanentlyByIDReq) returns (DeletePermanentlyByIDResp) {}
     rpc Login(LoginReq) returns (LoginResp) {}
-    rpc Register(RegisterReq) returns (RegisterReq) {}
+    rpc Register(RegisterReq) returns (RegisterResp) {}
 }
