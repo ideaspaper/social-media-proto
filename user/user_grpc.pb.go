@@ -22,11 +22,12 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type UserServiceClient interface {
-	FindByID(ctx context.Context, in *Req, opts ...grpc.CallOption) (*Resp, error)
-	FindByEmail(ctx context.Context, in *Req, opts ...grpc.CallOption) (*Resp, error)
-	Create(ctx context.Context, in *Req, opts ...grpc.CallOption) (*Resp, error)
-	DeleteByID(ctx context.Context, in *Req, opts ...grpc.CallOption) (*Resp, error)
-	DeletePermanentlyByID(ctx context.Context, in *Req, opts ...grpc.CallOption) (*Resp, error)
+	FindByID(ctx context.Context, in *FindByIDReq, opts ...grpc.CallOption) (*FindByIDResp, error)
+	FindByEmail(ctx context.Context, in *FindByEmailReq, opts ...grpc.CallOption) (*FindByEmailResp, error)
+	DeleteByID(ctx context.Context, in *DeleteByIDReq, opts ...grpc.CallOption) (*DeleteByIDResp, error)
+	DeletePermanentlyByID(ctx context.Context, in *DeletePermanentlyByIDReq, opts ...grpc.CallOption) (*DeletePermanentlyByIDResp, error)
+	Login(ctx context.Context, in *LoginReq, opts ...grpc.CallOption) (*LoginResp, error)
+	Register(ctx context.Context, in *RegisterReq, opts ...grpc.CallOption) (*RegisterReq, error)
 }
 
 type userServiceClient struct {
@@ -37,8 +38,8 @@ func NewUserServiceClient(cc grpc.ClientConnInterface) UserServiceClient {
 	return &userServiceClient{cc}
 }
 
-func (c *userServiceClient) FindByID(ctx context.Context, in *Req, opts ...grpc.CallOption) (*Resp, error) {
-	out := new(Resp)
+func (c *userServiceClient) FindByID(ctx context.Context, in *FindByIDReq, opts ...grpc.CallOption) (*FindByIDResp, error) {
+	out := new(FindByIDResp)
 	err := c.cc.Invoke(ctx, "/user.UserService/FindByID", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -46,8 +47,8 @@ func (c *userServiceClient) FindByID(ctx context.Context, in *Req, opts ...grpc.
 	return out, nil
 }
 
-func (c *userServiceClient) FindByEmail(ctx context.Context, in *Req, opts ...grpc.CallOption) (*Resp, error) {
-	out := new(Resp)
+func (c *userServiceClient) FindByEmail(ctx context.Context, in *FindByEmailReq, opts ...grpc.CallOption) (*FindByEmailResp, error) {
+	out := new(FindByEmailResp)
 	err := c.cc.Invoke(ctx, "/user.UserService/FindByEmail", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -55,17 +56,8 @@ func (c *userServiceClient) FindByEmail(ctx context.Context, in *Req, opts ...gr
 	return out, nil
 }
 
-func (c *userServiceClient) Create(ctx context.Context, in *Req, opts ...grpc.CallOption) (*Resp, error) {
-	out := new(Resp)
-	err := c.cc.Invoke(ctx, "/user.UserService/Create", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *userServiceClient) DeleteByID(ctx context.Context, in *Req, opts ...grpc.CallOption) (*Resp, error) {
-	out := new(Resp)
+func (c *userServiceClient) DeleteByID(ctx context.Context, in *DeleteByIDReq, opts ...grpc.CallOption) (*DeleteByIDResp, error) {
+	out := new(DeleteByIDResp)
 	err := c.cc.Invoke(ctx, "/user.UserService/DeleteByID", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -73,9 +65,27 @@ func (c *userServiceClient) DeleteByID(ctx context.Context, in *Req, opts ...grp
 	return out, nil
 }
 
-func (c *userServiceClient) DeletePermanentlyByID(ctx context.Context, in *Req, opts ...grpc.CallOption) (*Resp, error) {
-	out := new(Resp)
+func (c *userServiceClient) DeletePermanentlyByID(ctx context.Context, in *DeletePermanentlyByIDReq, opts ...grpc.CallOption) (*DeletePermanentlyByIDResp, error) {
+	out := new(DeletePermanentlyByIDResp)
 	err := c.cc.Invoke(ctx, "/user.UserService/DeletePermanentlyByID", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userServiceClient) Login(ctx context.Context, in *LoginReq, opts ...grpc.CallOption) (*LoginResp, error) {
+	out := new(LoginResp)
+	err := c.cc.Invoke(ctx, "/user.UserService/Login", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userServiceClient) Register(ctx context.Context, in *RegisterReq, opts ...grpc.CallOption) (*RegisterReq, error) {
+	out := new(RegisterReq)
+	err := c.cc.Invoke(ctx, "/user.UserService/Register", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -86,11 +96,12 @@ func (c *userServiceClient) DeletePermanentlyByID(ctx context.Context, in *Req, 
 // All implementations must embed UnimplementedUserServiceServer
 // for forward compatibility
 type UserServiceServer interface {
-	FindByID(context.Context, *Req) (*Resp, error)
-	FindByEmail(context.Context, *Req) (*Resp, error)
-	Create(context.Context, *Req) (*Resp, error)
-	DeleteByID(context.Context, *Req) (*Resp, error)
-	DeletePermanentlyByID(context.Context, *Req) (*Resp, error)
+	FindByID(context.Context, *FindByIDReq) (*FindByIDResp, error)
+	FindByEmail(context.Context, *FindByEmailReq) (*FindByEmailResp, error)
+	DeleteByID(context.Context, *DeleteByIDReq) (*DeleteByIDResp, error)
+	DeletePermanentlyByID(context.Context, *DeletePermanentlyByIDReq) (*DeletePermanentlyByIDResp, error)
+	Login(context.Context, *LoginReq) (*LoginResp, error)
+	Register(context.Context, *RegisterReq) (*RegisterReq, error)
 	mustEmbedUnimplementedUserServiceServer()
 }
 
@@ -98,20 +109,23 @@ type UserServiceServer interface {
 type UnimplementedUserServiceServer struct {
 }
 
-func (UnimplementedUserServiceServer) FindByID(context.Context, *Req) (*Resp, error) {
+func (UnimplementedUserServiceServer) FindByID(context.Context, *FindByIDReq) (*FindByIDResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method FindByID not implemented")
 }
-func (UnimplementedUserServiceServer) FindByEmail(context.Context, *Req) (*Resp, error) {
+func (UnimplementedUserServiceServer) FindByEmail(context.Context, *FindByEmailReq) (*FindByEmailResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method FindByEmail not implemented")
 }
-func (UnimplementedUserServiceServer) Create(context.Context, *Req) (*Resp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Create not implemented")
-}
-func (UnimplementedUserServiceServer) DeleteByID(context.Context, *Req) (*Resp, error) {
+func (UnimplementedUserServiceServer) DeleteByID(context.Context, *DeleteByIDReq) (*DeleteByIDResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteByID not implemented")
 }
-func (UnimplementedUserServiceServer) DeletePermanentlyByID(context.Context, *Req) (*Resp, error) {
+func (UnimplementedUserServiceServer) DeletePermanentlyByID(context.Context, *DeletePermanentlyByIDReq) (*DeletePermanentlyByIDResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeletePermanentlyByID not implemented")
+}
+func (UnimplementedUserServiceServer) Login(context.Context, *LoginReq) (*LoginResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Login not implemented")
+}
+func (UnimplementedUserServiceServer) Register(context.Context, *RegisterReq) (*RegisterReq, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Register not implemented")
 }
 func (UnimplementedUserServiceServer) mustEmbedUnimplementedUserServiceServer() {}
 
@@ -127,7 +141,7 @@ func RegisterUserServiceServer(s grpc.ServiceRegistrar, srv UserServiceServer) {
 }
 
 func _UserService_FindByID_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Req)
+	in := new(FindByIDReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -139,13 +153,13 @@ func _UserService_FindByID_Handler(srv interface{}, ctx context.Context, dec fun
 		FullMethod: "/user.UserService/FindByID",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserServiceServer).FindByID(ctx, req.(*Req))
+		return srv.(UserServiceServer).FindByID(ctx, req.(*FindByIDReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _UserService_FindByEmail_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Req)
+	in := new(FindByEmailReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -157,31 +171,13 @@ func _UserService_FindByEmail_Handler(srv interface{}, ctx context.Context, dec 
 		FullMethod: "/user.UserService/FindByEmail",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserServiceServer).FindByEmail(ctx, req.(*Req))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _UserService_Create_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Req)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(UserServiceServer).Create(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/user.UserService/Create",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserServiceServer).Create(ctx, req.(*Req))
+		return srv.(UserServiceServer).FindByEmail(ctx, req.(*FindByEmailReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _UserService_DeleteByID_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Req)
+	in := new(DeleteByIDReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -193,13 +189,13 @@ func _UserService_DeleteByID_Handler(srv interface{}, ctx context.Context, dec f
 		FullMethod: "/user.UserService/DeleteByID",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserServiceServer).DeleteByID(ctx, req.(*Req))
+		return srv.(UserServiceServer).DeleteByID(ctx, req.(*DeleteByIDReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _UserService_DeletePermanentlyByID_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Req)
+	in := new(DeletePermanentlyByIDReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -211,7 +207,43 @@ func _UserService_DeletePermanentlyByID_Handler(srv interface{}, ctx context.Con
 		FullMethod: "/user.UserService/DeletePermanentlyByID",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserServiceServer).DeletePermanentlyByID(ctx, req.(*Req))
+		return srv.(UserServiceServer).DeletePermanentlyByID(ctx, req.(*DeletePermanentlyByIDReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _UserService_Login_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(LoginReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServiceServer).Login(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/user.UserService/Login",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServiceServer).Login(ctx, req.(*LoginReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _UserService_Register_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RegisterReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServiceServer).Register(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/user.UserService/Register",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServiceServer).Register(ctx, req.(*RegisterReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -232,16 +264,20 @@ var UserService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _UserService_FindByEmail_Handler,
 		},
 		{
-			MethodName: "Create",
-			Handler:    _UserService_Create_Handler,
-		},
-		{
 			MethodName: "DeleteByID",
 			Handler:    _UserService_DeleteByID_Handler,
 		},
 		{
 			MethodName: "DeletePermanentlyByID",
 			Handler:    _UserService_DeletePermanentlyByID_Handler,
+		},
+		{
+			MethodName: "Login",
+			Handler:    _UserService_Login_Handler,
+		},
+		{
+			MethodName: "Register",
+			Handler:    _UserService_Register_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
