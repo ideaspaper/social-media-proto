@@ -23,7 +23,6 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type UserServiceClient interface {
 	FindByID(ctx context.Context, in *FindByIDReq, opts ...grpc.CallOption) (*FindByIDResp, error)
-	FindByEmail(ctx context.Context, in *FindByEmailReq, opts ...grpc.CallOption) (*FindByEmailResp, error)
 	DeleteByID(ctx context.Context, in *DeleteByIDReq, opts ...grpc.CallOption) (*DeleteByIDResp, error)
 	DeletePermanentlyByID(ctx context.Context, in *DeletePermanentlyByIDReq, opts ...grpc.CallOption) (*DeletePermanentlyByIDResp, error)
 	Login(ctx context.Context, in *LoginReq, opts ...grpc.CallOption) (*LoginResp, error)
@@ -41,15 +40,6 @@ func NewUserServiceClient(cc grpc.ClientConnInterface) UserServiceClient {
 func (c *userServiceClient) FindByID(ctx context.Context, in *FindByIDReq, opts ...grpc.CallOption) (*FindByIDResp, error) {
 	out := new(FindByIDResp)
 	err := c.cc.Invoke(ctx, "/user.UserService/FindByID", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *userServiceClient) FindByEmail(ctx context.Context, in *FindByEmailReq, opts ...grpc.CallOption) (*FindByEmailResp, error) {
-	out := new(FindByEmailResp)
-	err := c.cc.Invoke(ctx, "/user.UserService/FindByEmail", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -97,7 +87,6 @@ func (c *userServiceClient) Register(ctx context.Context, in *RegisterReq, opts 
 // for forward compatibility
 type UserServiceServer interface {
 	FindByID(context.Context, *FindByIDReq) (*FindByIDResp, error)
-	FindByEmail(context.Context, *FindByEmailReq) (*FindByEmailResp, error)
 	DeleteByID(context.Context, *DeleteByIDReq) (*DeleteByIDResp, error)
 	DeletePermanentlyByID(context.Context, *DeletePermanentlyByIDReq) (*DeletePermanentlyByIDResp, error)
 	Login(context.Context, *LoginReq) (*LoginResp, error)
@@ -111,9 +100,6 @@ type UnimplementedUserServiceServer struct {
 
 func (UnimplementedUserServiceServer) FindByID(context.Context, *FindByIDReq) (*FindByIDResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method FindByID not implemented")
-}
-func (UnimplementedUserServiceServer) FindByEmail(context.Context, *FindByEmailReq) (*FindByEmailResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method FindByEmail not implemented")
 }
 func (UnimplementedUserServiceServer) DeleteByID(context.Context, *DeleteByIDReq) (*DeleteByIDResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteByID not implemented")
@@ -154,24 +140,6 @@ func _UserService_FindByID_Handler(srv interface{}, ctx context.Context, dec fun
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(UserServiceServer).FindByID(ctx, req.(*FindByIDReq))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _UserService_FindByEmail_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(FindByEmailReq)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(UserServiceServer).FindByEmail(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/user.UserService/FindByEmail",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserServiceServer).FindByEmail(ctx, req.(*FindByEmailReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -258,10 +226,6 @@ var UserService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "FindByID",
 			Handler:    _UserService_FindByID_Handler,
-		},
-		{
-			MethodName: "FindByEmail",
-			Handler:    _UserService_FindByEmail_Handler,
 		},
 		{
 			MethodName: "DeleteByID",

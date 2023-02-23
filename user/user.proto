@@ -21,15 +21,6 @@ message FindByIDResp {
     UserResp userResp = 2;
 }
 
-message FindByEmailReq {
-    string email = 1;
-}
-
-message FindByEmailResp {
-    string message = 1;
-    UserResp userResp = 2;
-}
-
 message DeleteByIDReq {
     int64 id = 1;
 }
@@ -72,7 +63,6 @@ message RegisterResp {
 
 service UserService {
     rpc FindByID(FindByIDReq) returns (FindByIDResp) {}
-    rpc FindByEmail(FindByEmailReq) returns (FindByEmailResp) {}
     rpc DeleteByID(DeleteByIDReq) returns (DeleteByIDResp) {}
     rpc DeletePermanentlyByID(DeletePermanentlyByIDReq) returns (DeletePermanentlyByIDResp) {}
     rpc Login(LoginReq) returns (LoginResp) {}
